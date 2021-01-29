@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from PIL import Image
 import time
 import json
+import os
 
 # read config
 with open('config.json') as f:
@@ -43,7 +44,11 @@ login_elem.click()
 # wait for login then go to my ebook
 print("waiting for page ready...")
 # driver.implicitly_wait(3000) # seconds
-my_book_btn_elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "//a[@href='https://viewer-ebook.books.com.tw/viewer/index.html?readlist=all&MemberLogout=true']")))
+try:
+  my_book_btn_elem = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "//a[@href='https://viewer-ebook.books.com.tw/viewer/index.html?readlist=all&MemberLogout=true']")))
+except:
+  print("login failed")
+  quit()
 
 # go to my ebook
 print("going to ebook page...")
@@ -78,6 +83,10 @@ book_container_elem.click()
 print("loaded book container")
 input("please press any key to start...")
 
+# checking out folder
+if not os.path.exists(config['output_folder']):
+  os.mkdir(config['output_folder'])
+
 end_text = "全書閱畢，更多好書盡在博客來。"
 page = 1
 while True:
@@ -94,15 +103,18 @@ while True:
   bottom_buff = 0
   im = Image.open(tmp_img_path)
   im = im.crop((left_buff, top_buff, im.width - left_buff - right_buff, im.height - top_buff - bottom_buff))
-  im.save('book/{}.png'.format(page))
+  im.save(os.path.join(config['output_folder'], '{}.png'.format(page)))
 
   book_container_elem.send_keys(Keys.RIGHT)
   page += 1
+  
   try:
     end_elem = driver.find_element_by_xpath('//em[contains(text(), "' + end_text + '")]')
     break
   except:
     pass
 
+if os.path.exists(tmp_img_path):
+  os.remove(tmp_img_path)
 print("done")
 driver.close()
