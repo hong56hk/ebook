@@ -88,7 +88,7 @@ while True:
   driver.save_screenshot(tmp_img_path)
 
   # crop image
-  left_buff = 30
+  left_buff = 35
   right_buff = 25
   top_buff = 0
   bottom_buff = 0
