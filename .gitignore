@@ -1,6 +1,10 @@
 config.json
+driver/*
+.DS_Store
+launch.json
 
 *.png
 *.log
 
-driver/*
+
+
