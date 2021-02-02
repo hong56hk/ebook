@@ -91,8 +91,7 @@ end_text = "全書閱畢，更多好書盡在博客來。"
 page = 1
 while True:
   tmp_img_path = "tmp.png"
-  time.sleep(0.5)
-
+  time.sleep(0.8)
 
   driver.save_screenshot(tmp_img_path)
 
